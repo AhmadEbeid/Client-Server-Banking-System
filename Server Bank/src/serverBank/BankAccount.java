@@ -120,8 +120,8 @@ public class BankAccount {
 	
 	boolean transferMoneyIn(Dao<Transaction, String> dao, double transfer, String otherPartyID, Dao<BankAccount, String> daoBank) throws SQLException {
 		
-		double amm = Double.parseDouble(Encryptor.decrypt(amount));
-		if(transfer <= amm && transfer > 0 && !otherPartyID.equals(String.valueOf(this.bankAccountID))) {
+//		double amm = Double.parseDouble(Encryptor.decrypt(amount));
+		if(transfer > 0 && !otherPartyID.equals(String.valueOf(this.bankAccountID))) {
 			
 			double am = Double.parseDouble(Encryptor.decrypt(amount)) + transfer;
 			amount = Encryptor.encrypt(String.valueOf(am));

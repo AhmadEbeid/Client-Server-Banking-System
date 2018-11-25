@@ -337,7 +337,7 @@ public class MainMenu {
 						    		BankAccount bank = socketClass.Transfer(accountN, am);
 									if(bank == null) {
 										d.dispose();
-										JOptionPane.showMessageDialog(frmAccount, "Error Occured, Try again later");
+										JOptionPane.showMessageDialog(frmAccount, "Other bank is not online, Try again later");
 									}else if(bank.getAmount() == -1) {
 										d.dispose();
 										JOptionPane.showMessageDialog(frmAccount, "Account not found");

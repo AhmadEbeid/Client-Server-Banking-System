@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
@@ -30,6 +31,15 @@ public class ServerSide {
 	public static int OtherBankPort = 5680;
 	public static String otherBankIP = "127.0.0.1";
 	public static int bankNumber = 250;
+	
+	public static ArrayList<Integer> OtherBankPorts;
+	public static ArrayList<String> otherBankIPs;
+	public static ArrayList<Integer> otherBankNumbers;
+	
+	public static ArrayList<JTextField> OtherBankPortsFields;
+	public static ArrayList<JTextField> otherBankIPsFields;
+	public static ArrayList<JTextField> otherBankNumbersFields;
+	
 	public static int otherBankNumber = 300;
 	private boolean status = false;
 	private Thread thread;
@@ -64,11 +74,20 @@ public class ServerSide {
 	 */
 	private void initialize() {
 		frmBankServer = new JFrame();
-		frmBankServer.setTitle("Bank Server");
 		frmBankServer.setResizable(false);
+		frmBankServer.getContentPane().setEnabled(false);
+		frmBankServer.setTitle("Bank Server");
 		frmBankServer.setBounds(100, 100, 226, 170);
 		frmBankServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmBankServer.getContentPane().setLayout(null);
+		
+		OtherBankPorts = new ArrayList<>();
+		otherBankIPs = new ArrayList<>();
+		otherBankNumbers = new ArrayList<>();
+		
+		OtherBankPortsFields = new ArrayList<>();
+		otherBankIPsFields = new ArrayList<>();
+		otherBankNumbersFields = new ArrayList<>();
 		
 		ImageIcon im = new ImageIcon(getClass().getResource("/images.png"));
 		frmBankServer.setIconImage(im.getImage());
@@ -120,7 +139,8 @@ public class ServerSide {
 				bankPort.setText(String.valueOf(port));
 				JTextField bank2Port = new JTextField();
 				bank2Port.setText(String.valueOf(OtherBankPort));
-				
+			    
+			    
 				Object[] message = {
 					"Current Bank Number", bankNum,
 				    "Current Bank Port", bankPort,
@@ -134,21 +154,25 @@ public class ServerSide {
 				if (option == JOptionPane.OK_OPTION) {
 					try {
 						port = Integer.parseInt(bankPort.getText());
+						bankNumber = Integer.parseInt(bankNum.getText());
+						otherBankIP = bankIP.getText();
+						label_1.setText(bankNum.getText());
+						
 						OtherBankPort = Integer.parseInt(bank2Port.getText());
 						otherBankNumber = Integer.parseInt(bank2Num.getText());
-						bankNumber = Integer.parseInt(bankNum.getText());
 						String[] IPs = bankIP.getText().trim().split("\\.");
 						Integer.parseInt(IPs[0]);
 						Integer.parseInt(IPs[1]);
 						Integer.parseInt(IPs[2]);
 						Integer.parseInt(IPs[3]);
-						otherBankIP = bankIP.getText();
-						label_1.setText(bankNum.getText());
+						
+						
+						
 					}catch( Exception ex) {
 						port = 5678;
-						OtherBankPort = 5680;
-						otherBankIP = "127.0.0.1";
-						otherBankNumber = 300;
+//						OtherBankPort = 5680;
+//						otherBankIP = "127.0.0.1";
+//						otherBankNumber = 300;
 						bankNumber = 250;
 						label_1.setText(String.valueOf(bankNumber));
 						JOptionPane.showMessageDialog(frmBankServer, "Error in input data");

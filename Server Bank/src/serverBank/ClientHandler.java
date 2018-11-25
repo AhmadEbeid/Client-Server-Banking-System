@@ -48,6 +48,10 @@ class ClientHandler implements Runnable
   
     private void sendOut(String name, String data) throws IOException {
     	Gson gson = new Gson();
+    	System.out.println(name);
+    	System.out.println(gson.toJson(new SendData(name, data)));
+    	System.out.println(Encryptor.encrypt(gson.toJson(new SendData(name, data))));
+    	System.out.println("//////////");
     	dos.writeUTF(Encryptor.encrypt(gson.toJson(new SendData(name, data))));
     }
     
@@ -100,7 +104,10 @@ class ClientHandler implements Runnable
                     	DataOutputStream dos1 = null;
                     	DataInputStream dis1 = null;
                     	if(String.valueOf(transfer.otherBankAccountID).length() > 3 && !String.valueOf(transfer.otherBankAccountID).substring(0, 3).equals(String.valueOf(ServerSide.bankNumber))) {
-                			
+                			if(!String.valueOf(transfer.otherBankAccountID).substring(0, 3).equals(String.valueOf(ServerSide.otherBankNumber))) {
+                				sendOut("invalid Account", null);
+                				break;
+                			}
                 			try {
                 				c1 = new Socket(ServerSide.otherBankIP, ServerSide.OtherBankPort);
                 				dos1 = new DataOutputStream(c1.getOutputStream());
@@ -113,6 +120,10 @@ class ClientHandler implements Runnable
                 				
                 				String a = gson.toJson(new SendData("transferOut", gson.toJson(transferOut)));
                 				dos1.writeUTF(Encryptor.encrypt(a));
+                				
+                				System.out.println("transferOut");
+                		    	System.out.println(gson.toJson(new SendData("transferOut", gson.toJson(transferOut))));
+                		    	System.out.println("//////////");
                 				
                 				received = Encryptor.decrypt(dis1.readUTF());
                 		        data = gson.fromJson(received, SendData.class);
@@ -138,7 +149,7 @@ class ClientHandler implements Runnable
                 		        dis1.close();
                 		        c1.close();
                 			} catch (IOException e) {
-								sendOut("invalid", null);
+								sendOut("invalid Bank", null);
                 				// dos.writeUTF(gson.toJson(new SendData("invalid", null))); 
                 			}
                 		}else {
@@ -159,6 +170,10 @@ class ClientHandler implements Runnable
                         
                     case "transferOut":
                     	transferOut = gson.fromJson(data.getGsonData(), TransferOut.class);
+                    	if(!new DatabaseHandler().checkBankAccount(transferOut.currentBankAccountID)) {
+                    		sendOut("invalid Account", null);
+                    		break;
+                    	}
                     	res = (new DatabaseHandler(transferOut.currentBankAccountID)).transferMoneyIn(transferOut.amount, transferOut.otherBankAccountID);
                     	if(res == 1) {
 							sendOut("transferOut", null);

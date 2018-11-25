@@ -161,6 +161,17 @@ public class DatabaseHandler {
 		
 	}
 	
+	boolean checkBankAccount(String accountNo) {
+		try {
+			BankAccount b = bankAccountDao.queryForId(Encryptor.encrypt(String.valueOf(accountNo)));
+			if(b == null)
+				return false;
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+	
 	List<Transaction> getTransactions() {
 		try {
 			updateData();
